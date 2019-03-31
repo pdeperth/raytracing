@@ -418,7 +418,7 @@ public:
 		}
 
 	 void build_bhv(BHVNode* node, const int &debut, const int &fin) {
-		 if (fin-debut > 50) {
+		 if (fin-debut > 0) {
 			 cout << "starting to build" << endl;
 			 cout << "début : " << debut << " fin : " << fin << endl;
 			 // mtex.lock();
@@ -853,9 +853,9 @@ int main() {
 
 
 
-	int W = 100; // 512;
-	int H = 100; // 512;
-	int NRays = 2;
+	int W = 500; // 512;
+	int H = 500; // 512;
+	int NRays = 1;
 	// Camera
 	double fov = 60 * M_PI / 180.;
 	std::vector<unsigned char> image(W*H * 3, 0);
@@ -943,7 +943,7 @@ int main() {
 		}
 	}
 	cout << "Writing image" << endl;
-	stbi_write_png("image2.png", W, H, 3, &image[0], 0);
+	stbi_write_png("image.png", W, H, 3, &image[0], 0);
 	cout << "Finished writing image" << endl;
 	// delete []; // ceci est un test
 	return 0;

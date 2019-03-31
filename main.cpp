@@ -855,7 +855,7 @@ int main() {
 
 	int W = 500; // 512;
 	int H = 500; // 512;
-	int NRays = 1;
+	int NRays = 100;
 	// Camera
 	double fov = 60 * M_PI / 180.;
 	std::vector<unsigned char> image(W*H * 3, 0);
@@ -909,7 +909,7 @@ int main() {
 	double pos_objet_focal = 0; // coordonnée z de l'objet focal net.
 
 	cout << "Creating the pixels" << endl;
-	// #pragma omp parallel for
+	#pragma omp parallel for
 	for (int i = 0; i < W; i++) {
 		if (i % 10 == 0) {std::cout << "ligne : " << i << std::endl;}
 		for (int j = 0; j < H; j++) {

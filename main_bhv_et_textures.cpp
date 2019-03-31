@@ -943,7 +943,7 @@ int main() {
 		}
 	}
 	cout << "Writing image" << endl;
-	stbi_write_png("image.png", W, H, 3, &image[0], 0);
+	stbi_write_png("img/image.png", W, H, 3, &image[0], 0);
 	cout << "Finished writing image" << endl;
 	// delete []; // ceci est un test
 	return 0;

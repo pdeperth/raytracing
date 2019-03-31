@@ -35,6 +35,12 @@ public:
 		y /= n;
 		z /= n;
 	}
+	void rotationz(const double &rz){
+		double nv_x = sin(rz)*x + cos(rz)*y;
+		double nv_y = -cos(rz)*x + sin(rz)*y;
+		x = nv_x;
+		y = nv_y;
+	}
 	double x, y, z;
 };
 
@@ -196,7 +202,7 @@ public:
 		this->enveloppe_ext = build_box(0,indices.size());
 		this->BHV = BHVNode(enveloppe_ext, 0, indices.size());
 		// BHVNode* enveloppe;
-		cout << "about to build BHV box" << endl;
+		// cout << "about to build BHV box" << endl;
 		build_bhv(&BHV, 0, indices.size());
 		cout << "BHV box built" << endl;
 	};
@@ -418,7 +424,7 @@ public:
 		}
 
 	 void build_bhv(BHVNode* node, const int &debut, const int &fin) {
-		 if (fin-debut > 50) {
+		 if (fin-debut > 0) {
 			 cout << "starting to build" << endl;
 			 cout << "début : " << debut << " fin : " << fin << endl;
 			 // mtex.lock();
@@ -555,6 +561,16 @@ public:
 		return rt;
  	}
 
+	Ray ray_transform_rash(const double &scaling, const double &rotz, const Vector &translation, const Ray r) {
+	 // la matrice doit être de taille 3*4
+	 Ray rt = r;
+	 rt.C = r.C - translation;
+	 rt.u.x = sin(rotz)*r.u.x + -cos(rotz)*r.u.y;
+	 rt.u.y = cos(rotz)*r.u.x + sin(rotz)*r.u.y;
+	 rt.u = 1/scaling*(rt.u);
+	 return rt;
+ }
+
 	 virtual bool intersect(const Ray& r, Vector& P, Vector& N) {
 		 	double smallestt = 1E15;
 			bool has_inter = false;
@@ -565,7 +581,10 @@ public:
 				boiteloc = &BHV;
 				// cout << " a attribué boiteloc " << endl;
 				vector<int> indicesTrianglesIntersectes;
-				Ray r_trans = ray_transform(inversematrix, r);
+				Vector translation = Vector(10,0,10);
+				double scaling = 1.2;
+				double rotz = 1.5;
+				Ray r_trans = ray_transform_rash(scaling, rotz, translation, r);
 				intersection_bhv(r_trans, boiteloc, indicesTrianglesIntersectes);
 
 				// while (boiteloc->fg != NULL || boiteloc->fd != NULL) {
@@ -614,8 +633,9 @@ public:
 					// cout << "tloc : " << tloc <<endl;
 					if (inter && tloc < smallestt) {
 						smallestt = tloc;
-						P = Ploc;
+						P = Ploc + translation;
 						N = (1-betaloc-gammaloc)*normals[indices[i].ni] + betaloc*normals[indices[i].nj] + gammaloc*normals[indices[i].nk];
+						N.rotationz(rotz);
 						N.normalize();
 						if (indices[i].group < 0) {
 							this->albedo;
